@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {# 1 of 3 #}
+    </div>
+    <div class="col-10">
+      <div class="container">
+        <div class="row">
+          <h2>{{ movie.title }}</h2><br>
+          <div class="col-sm">
+            <h4>Dane</h4><br>
+            <p>Rok produkcji: {{ movie.year }}</p>
+            <p>Reżyser: {{ movie.director.first_name }} {{ movie.director.last_name }}</p>
+            <p>Scenariusz: {{ movie.screenplay.first_name }} {{ movie.screenplay.last_name }}</p>
+            <p>Ocena: {{ movie.rating }}</p>
+          </div>
+          <div class="col-sm">
+            <h4>Obsada</h4><br>
+            <ul class="list-group list-group-flush">
+              {% for star in movie.personmovie_set.all %}
+                <li class="list-group-item">{{ star.person.first_name }} {{ star.person.last_name }} || W roli: {{ star.role }} <a href="{% url 'movie_person_remove' movie.id star.person.id %}"><button type="button" class="btn-sm btn-close"></button></a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="col-sm">
+            <h4>Kategoria</h4><br>
+            <ul class="list-group list-group-flush">
+              {% for genre in movie.genre.all %}
+                <li class="list-group-item">{{ genre.name }} <a href="{% url 'movie_genre_remove' movie.id genre.id %}"><button type="button" class="btn-sm btn-close"></button></a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      {# 3 of 3 #}
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {# 1 of 3 #}
+    </div>
+    <div class="col-10">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm">
+            {# 1 of 3 #}
+          </div>
+          <div class="col-sm">
+
+            {# Form for adding person to a movie with specific role #}
+            <form class="" action="{% url 'movie_person_add' movie.id %}" method="POST">
+              {% csrf_token %}
+              <label for="person_id" class="form-label">Person:</label>
+              <select class="form-select" aria-label="Default select example" id="person_id" name="person_id">
+                <option selected></option>
+                {% for person in people %}
+                <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                {% endfor %}
+              </select>
+              <label for="role" class="form-label">Role:</label>
+              <input type="text" id="role" name="role" class="form-control" value="">
+              <br>
+              <button type="submit" class="btn btn-primary">ADD PERSON</button>
+            </form>
+          </div>
+          <div class="col-sm">
+            </ul>
+
+            {# Form for adding genre to the movie #}
+            <form class="" action="{% url 'movie_genre_add' movie.id %}" method="POST">
+              {% csrf_token %}
+              <label for="genre_id" class="form-label">Genre:</label>
+              <select class="form-select" aria-label="Default select example" id="genre_id" name="genre_id">
+                <option selected></option>
+                {% for genre in genres %}
+                <option value="{{ genre.id }}">{{ genre.name }}</option>
+                {% endfor %}
+              </select>
+              <br>
+              <button type="submit" class="btn btn-primary">ADD GENRE</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      {# 3 of 3 #}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
