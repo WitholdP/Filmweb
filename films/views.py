@@ -4,7 +4,7 @@ from .models import Genre, Job, Movie, Person, PersonMovie
 
 
 def index(request):
-    return render(request, "index.html")
+    return render(request, "films/index.html")
 
 
 def movies(request):
@@ -32,7 +32,7 @@ def movies(request):
             screenplay_id=screenplay_id,
         )
         context["message"] = f"Film {title} dodany do bazy"
-    return render(request, "movies.html", context)
+    return render(request, "films/movies.html", context)
 
 
 def movie(request, movie_id):
@@ -40,7 +40,9 @@ def movie(request, movie_id):
     people = Person.objects.all()
     genres = Genre.objects.all()
     return render(
-        request, "movie.html", {"movie": movie, "people": people, "genres": genres}
+        request,
+        "films/movie.html",
+        {"movie": movie, "people": people, "genres": genres},
     )
 
 
@@ -92,7 +94,9 @@ def persons(request):
         message = f"Osoba {first_name} {last_name} dodana do bazy"
 
     return render(
-        request, "persons.html", {"persons": persons, "jobs": jobs, "message": message}
+        request,
+        "films/persons.html",
+        {"persons": persons, "jobs": jobs, "message": message},
     )
 
 
@@ -109,7 +113,9 @@ def person(request, person_id):
         message = f"Osoba zaktualizowana"
 
     return render(
-        request, "person.html", {"person": person, "message": message, "jobs": jobs}
+        request,
+        "films/person.html",
+        {"person": person, "message": message, "jobs": jobs},
     )
 
 
@@ -127,7 +133,7 @@ def genres(request):
         new_genres = Genre.objects.create(name=genre_name)
         message = f"Gatunek {genre_name} dodady do bazy"
 
-    return render(request, "genres.html", {"genres": genres, "message": message})
+    return render(request, "films/genres.html", {"genres": genres, "message": message})
 
 
 def delete_genre(request, genre_id):
