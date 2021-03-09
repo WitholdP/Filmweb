@@ -1,5 +1,5 @@
-from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
 from .models import Genre, Job, Movie, Person, PersonMovie
 
@@ -46,6 +46,7 @@ def movie(request, movie_id):
         {"movie": movie, "people": people, "genres": genres},
     )
 
+
 @login_required
 def movie_person_add(request, movie_id):
     if request.method == "POST":
@@ -57,6 +58,7 @@ def movie_person_add(request, movie_id):
         )
         return redirect(f"/movie-details/{movie_id}")
 
+
 @login_required
 def movie_person_remove(request, movie_id, person_id):
     person = Person.objects.get(pk=person_id)
@@ -64,6 +66,7 @@ def movie_person_remove(request, movie_id, person_id):
     role_remove = PersonMovie.objects.filter(person=person, movie=movie)
     role_remove.delete()
     return redirect(f"/movie-details/{movie_id}")
+
 
 @login_required
 def movie_genre_add(request, movie_id):
@@ -73,6 +76,7 @@ def movie_genre_add(request, movie_id):
         genre = Genre.objects.get(pk=genre_id)
         add_genre = movie.genre.add(genre)
         return redirect(f"/movie-details/{movie_id}")
+
 
 @login_required
 def movie_genre_remove(request, movie_id, genre_id):
@@ -119,6 +123,7 @@ def person(request, person_id):
         {"person": person, "message": message, "jobs": jobs},
     )
 
+
 @login_required
 def delete_person(request, person_id):
     person = Person.objects.get(pk=person_id)
@@ -135,9 +140,12 @@ def genres(request):
             new_genres = Genre.objects.create(name=genre_name)
             message = f"Gatunek {genre_name} dodady do bazy"
 
-        return render(request, "films/genres.html", {"genres": genres, "message": message})
+        return render(
+            request, "films/genres.html", {"genres": genres, "message": message}
+        )
     else:
-        return redirect('/')
+        return redirect("/")
+
 
 @login_required
 def delete_genre(request, genre_id):
