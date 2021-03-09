@@ -8,56 +8,48 @@
   </div>
 {% endif %}
 
-<div class="container">
-  <div class="row">
-    <div class="col">
-      {# 1 of 3 #}
-    </div>
-    <div class="col-10">
-      <h1>List of people</h1>
-      <br>
-      <table class="table table-primary">
-        <tr>
-          <th>Id</th>
-          <th>Imię</th>
-          <th>Nazwisko</th>
-          <th>Zawód</th>
-          <th></th>
-        </tr>
-        {% for person in persons %}
-        <tr>
-          <td>{{ person.id }}</td>
-          <td>{{ person.first_name }}</td>
-          <td>{{ person.last_name }}</td>
-          <td>{{ person.job.job_name }}</td>
-          <td>
-            <a href="{% url 'person' person.id %}"><button type="button" class="btn btn-primary">EDIT</button></a>
-            <a href="{% url 'delete_person' person.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
-          </td>
-        </tr>
+<h1>List of people</h1>
+<div class="d-flex mt-4">
+  <div class="container mr-3">
+    <table class="table table-primary">
+      <tr>
+        <th>Id</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Zawód</th>
+        <th></th>
+      </tr>
+      {% for person in persons %}
+      <tr>
+        <td>{{ person.id }}</td>
+        <td>{{ person.first_name }}</td>
+        <td>{{ person.last_name }}</td>
+        <td>{{ person.job.job_name }}</td>
+        <td>
+          <a href="{% url 'person' person.id %}"><button type="button" class="btn btn-primary">EDIT</button></a>
+          <a href="{% url 'delete_person' person.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="ml-3">
+    <form class="" action="" method="POST">
+      {% csrf_token %}
+      <label for="first_name" class="form-label">First name:</label><br>
+      <input type="text" id="first_name" class="form-control" name="first_name" value="">
+      <label for="last_name" class="form-label">Last name:</label><br>
+      <input type="text" id="last_name" name="last_name" class="form-control" value="">
+      <label for="job_id" class="form-label">Job:</label><br>
+      <select class="form-select" aria-label="Default select example" id="job_id" name="job_id">
+        <option selected ></option>
+        {% for job in jobs %}
+        <option value="{{ job.id }}">{{ job.job_name }}</option>
         {% endfor %}
-      </table>
-      <br><br>
-      <form class="" action="" method="POST">
-        {% csrf_token %}
-        <label for="first_name" class="form-label">First name:</label><br>
-        <input type="text" id="first_name" class="form-control" name="first_name" value="">
-        <label for="last_name" class="form-label">Last name:</label><br>
-        <input type="text" id="last_name" name="last_name" class="form-control" value="">
-        <label for="job_id" class="form-label">Job:</label><br>
-        <select class="form-select" aria-label="Default select example" id="job_id" name="job_id">
-          <option selected ></option>
-          {% for job in jobs %}
-          <option value="{{ job.id }}">{{ job.job_name }}</option>
-          {% endfor %}
-        </select>
-        <br>
-        <button type="submit" class="btn btn-primary">ADD PERSON</button>
-      </form>
-    </div>
-    <div class="col">
-      {# 3 of 3 #}
-    </div>
+      </select>
+      <br>
+      <button type="submit" class="btn btn-primary">ADD PERSON</button>
+    </form>
   </div>
 </div>
 
