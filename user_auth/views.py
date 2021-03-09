@@ -2,4 +2,4 @@ from django.shortcuts import render
 
 
 def login(request):
-    pass
+    return render(request, 'user_auth/login.html')
