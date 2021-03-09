@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 
 from .models import Genre, Job, Movie, Person, PersonMovie
 
@@ -45,7 +46,7 @@ def movie(request, movie_id):
         {"movie": movie, "people": people, "genres": genres},
     )
 
-
+@login_required
 def movie_person_add(request, movie_id):
     if request.method == "POST":
         movie = Movie.objects.get(pk=movie_id)
@@ -56,7 +57,7 @@ def movie_person_add(request, movie_id):
         )
         return redirect(f"/movie-details/{movie_id}")
 
-
+@login_required
 def movie_person_remove(request, movie_id, person_id):
     person = Person.objects.get(pk=person_id)
     movie = Movie.objects.get(pk=movie_id)
@@ -64,7 +65,7 @@ def movie_person_remove(request, movie_id, person_id):
     role_remove.delete()
     return redirect(f"/movie-details/{movie_id}")
 
-
+@login_required
 def movie_genre_add(request, movie_id):
     if request.method == "POST":
         movie = Movie.objects.get(pk=movie_id)
@@ -73,7 +74,7 @@ def movie_genre_add(request, movie_id):
         add_genre = movie.genre.add(genre)
         return redirect(f"/movie-details/{movie_id}")
 
-
+@login_required
 def movie_genre_remove(request, movie_id, genre_id):
     genre = Genre.objects.get(pk=genre_id)
     movie = Movie.objects.get(pk=movie_id)
@@ -118,7 +119,7 @@ def person(request, person_id):
         {"person": person, "message": message, "jobs": jobs},
     )
 
-
+@login_required
 def delete_person(request, person_id):
     person = Person.objects.get(pk=person_id)
     person.delete()
@@ -126,16 +127,19 @@ def delete_person(request, person_id):
 
 
 def genres(request):
-    genres = Genre.objects.all()
-    message = None
-    if request.method == "POST":
-        genre_name = request.POST["genre_name"]
-        new_genres = Genre.objects.create(name=genre_name)
-        message = f"Gatunek {genre_name} dodady do bazy"
+    if request.user.is_authenticated:
+        genres = Genre.objects.all()
+        message = None
+        if request.method == "POST":
+            genre_name = request.POST["genre_name"]
+            new_genres = Genre.objects.create(name=genre_name)
+            message = f"Gatunek {genre_name} dodady do bazy"
 
-    return render(request, "films/genres.html", {"genres": genres, "message": message})
+        return render(request, "films/genres.html", {"genres": genres, "message": message})
+    else:
+        return redirect('/')
 
-
+@login_required
 def delete_genre(request, genre_id):
     genre = Genre.objects.get(pk=genre_id)
     genre.delete()

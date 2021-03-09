@@ -14,7 +14,11 @@
     <h4>Obsada</h4><br>
     <ul class="list-group list-group-flush">
       {% for star in movie.personmovie_set.all %}
-        <li class="list-group-item">{{ star.person.first_name }} {{ star.person.last_name }} || W roli: {{ star.role }} <a href="{% url 'movie_person_remove' movie.id star.person.id %}"><button type="button" class="btn-sm btn-close"></button></a></li>
+        <li class="list-group-item">{{ star.person.first_name }} {{ star.person.last_name }} || W roli: {{ star.role }}
+          {% if user.is_authenticated %}
+          <a href="{% url 'movie_person_remove' movie.id star.person.id %}"><button type="button" class="btn-sm btn-close"></button></a>
+          {% endif %}
+        </li>
       {% endfor %}
     </ul>
   </div>
@@ -22,15 +26,20 @@
     <h4>Kategoria</h4><br>
     <ul class="list-group list-group-flush">
       {% for genre in movie.genre.all %}
-        <li class="list-group-item">{{ genre.name }} <a href="{% url 'movie_genre_remove' movie.id genre.id %}"><button type="button" class="btn-sm btn-close"></button></a></li>
+        <li class="list-group-item">{{ genre.name }}
+          {% if user.is_authenticated %}
+          <a href="{% url 'movie_genre_remove' movie.id genre.id %}"><button type="button" class="btn-sm btn-close"></button></a>
+          {% endif %}
+        </li>
       {% endfor %}
     </ul>
   </div>
 </div>
 
+{% if user.is_authenticated %}
 <div class="d-flex mt-5">
   <div class="container mx-5">
-
+    {# empty container for spacing #}
   </div>
   <div class="container mx-5">
     <form class="" action="{% url 'movie_person_add' movie.id %}" method="POST">
@@ -63,5 +72,6 @@
     </form>
   </div>
 </div>
+{% endif %}
 
 {% endblock %}

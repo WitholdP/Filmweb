@@ -10,11 +10,11 @@
 
 <h2>List of movies</h2>
 <div class="d-flex mt-4">
-  <div class="d-flex flex-wrap mr-3">
+  <div class="container d-flex flex-wrap mr-3">
     {% for movie in movies %}
-      <div class="card m-1" style="width: 50rem;">
+      <div class="card m-1" style="width: 100%;">
         <div class="d-flex">
-          <img class="card-img-top m-1" src="..." alt="Card image cap">
+          <img class="card-img-top m-1" src="..." alt="Card image cap" style="width: 25%;">
           <div class="card-body">
             <h5 class="card-title">{{ movie.title }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ movie.year }}</h6>
@@ -25,7 +25,8 @@
       </div>
     {% endfor %}
   </div>
-  <div class="container ml-3">
+  {% if user.is_authenticated %}
+  <div class="ml-3">
     <form class="" action="" method="POST">
       {% csrf_token %}
       <label for="title" class="form-label">Title:</label>
@@ -56,6 +57,7 @@
       <button type="submit" class="btn btn-primary">ADD MOVIE</button>
     </form>
   </div>
+  {% endif %}
 </div>
 
 

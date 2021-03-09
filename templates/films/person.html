@@ -9,12 +9,13 @@
 {% endif %}
 
 <div class="container">
-  <h1>Edit</h1>
+  <h1>{{ person.first_name }} {{ person.last_name }}</h1>
 
   {% if message %}
     <p>{{ message }}</p>
   {% endif %}
 
+  {% if user.is_authenticated %}
   <form class="" action="" method="POST">
     {% csrf_token %}
     <label for="first_name" class="form-label">First name:</label><br>
@@ -31,6 +32,7 @@
     <br>
     <button type="submit" class="btn btn-primary">EDIT</button>
   </form>
+  {% endif %}
 </div>
 
 {% endblock %}
