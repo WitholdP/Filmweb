@@ -10,23 +10,25 @@
 
 <h2>List of movies</h2>
 <div class="d-flex mt-4">
-  <div class="container d-flex flex-wrap mr-3">
+  <div class="container d-flex flex-wrap justify-content-center mr-3">
     {% for movie in movies %}
-      <div class="card m-1" style="width: 100%;">
-        <div class="d-flex">
-          <img class="card-img-top m-1" src="..." alt="Card image cap" style="width: 25%;">
-          <div class="card-body">
+      <div class="card m-1" style="width: 80%;">
+        <div class="d-flex justify-content-between">
+          <div class="container m-2" style="width: 40%">
             <h5 class="card-title">{{ movie.title }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ movie.year }}</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">{{ movie.description }}</p>
             <a href="{% url 'movie' movie.id %}"><button type="button" class="btn btn-primary">Szczegóły</button></a>
+          </div>
+          <div class="" style="width: 20%">
+            <img class="" src=" " alt="Card image cap" style="">
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
   {% if user.is_authenticated %}
-  <div class="ml-3">
+  <div class="container ml-3" style="width: 30%">
     <form class="" action="" method="POST">
       {% csrf_token %}
       <label for="title" class="form-label">Title:</label>

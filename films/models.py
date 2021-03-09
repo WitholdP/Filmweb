@@ -36,6 +36,7 @@ class Movie(models.Model):
     year = models.IntegerField()
     rating = models.FloatField()
     genre = models.ManyToManyField(Genre)
+    description = models.TextField(null=True)
 
     def __str__(self):
         return self.title

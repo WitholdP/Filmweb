@@ -14,7 +14,9 @@
     <h4>Obsada</h4><br>
     <ul class="list-group list-group-flush">
       {% for star in movie.personmovie_set.all %}
-        <li class="list-group-item">{{ star.person.first_name }} {{ star.person.last_name }} || W roli: {{ star.role }}
+        <li class="list-group-item">
+          <a href="{% url 'person' star.person.id %}"><div>{{ star.person.first_name }} {{ star.person.last_name }}</div></a>
+          <strong>W roli:</strong> {{ star.role }}
           {% if user.is_authenticated %}
           <a href="{% url 'movie_person_remove' movie.id star.person.id %}"><button type="button" class="btn-sm btn-close"></button></a>
           {% endif %}

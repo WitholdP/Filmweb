@@ -32,7 +32,7 @@ urlpatterns = [
         name="movie_person_remove",
     ),
     path("persons/", persons, name="persons"),
-    path("edit-person/<int:person_id>/", person, name="person"),
+    path("person/<int:person_id>/", person, name="person"),
     path("delete-person/<int:person_id>/", delete_person, name="delete_person"),
     path("genres/", genres, name="genres"),
     path("delete-genre/<int:genre_id>/", delete_genre, name="delete_genre"),
