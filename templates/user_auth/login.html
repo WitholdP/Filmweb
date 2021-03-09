@@ -2,13 +2,19 @@
 
 {% block content %}
 
+{% if message %}
+  <div class="alert alert-danger" role="alert">
+    {{ message }}
+  </div>
+{% endif %}
+
 <div class="container">
   <form class="" action="" method="POST">
     {% csrf_token %}
-    <label for="email" class="form-label">Email</label>
-    <input type="text" id="email" name="email" class="form-control" value="">
+    <label for="username" class="form-label">Nazwa użytkownika</label>
+    <input type="text" id="username" name="username" class="form-control" value="">
 
-    <label for="password" class="form-label">Password</label>
+    <label for="password" class="form-label">Hasło</label>
     <input type="password" id="password" name="password" class="form-control" value="">
 
     <br>
