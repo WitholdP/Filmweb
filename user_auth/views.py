@@ -1,24 +1,30 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
 
 
 def log_in(request):
     message = None
     if request.user.is_authenticated:
-        return redirect('/')
+        return redirect("/")
     else:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
+        if request.method == "POST":
+            username = request.POST["username"]
+            password = request.POST["password"]
             user = authenticate(request, username=username, password=password)
             if user:
                 login(request, user)
-                return redirect('/')
+                return redirect("/")
             else:
-                message = 'Zła nazwa użytkownika lub hasło'
+                message = "Zła nazwa użytkownika lub hasło"
 
+        return render(
+            request,
+            "user_auth/login.html",
+            {
+                "message": message,
+            },
+        )
 
-        return render(request, 'user_auth/login.html', {'message': message,})
 
 def log_out(request):
     if request.user.is_authenticated:
