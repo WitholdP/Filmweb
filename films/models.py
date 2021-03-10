@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -34,7 +35,6 @@ class Movie(models.Model):
     )
     starring = models.ManyToManyField(Person, through="PersonMovie")
     year = models.IntegerField()
-    rating = models.FloatField()
     genre = models.ManyToManyField(Genre)
     description = models.TextField(null=True)
 
@@ -46,3 +46,11 @@ class PersonMovie(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     role = models.CharField(max_length=128)
+
+
+class MRating(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField(null=True)
+    posting_date = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)

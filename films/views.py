@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
-from .models import Genre, Job, Movie, Person, PersonMovie
+from .models import Genre, Job, Movie, MRating, Person, PersonMovie
 
 
 def index(request):
@@ -40,11 +41,39 @@ def movie(request, movie_id):
     movie = Movie.objects.get(pk=movie_id)
     people = Person.objects.all()
     genres = Genre.objects.all()
+    rating_avg = 0
+    ratings = movie.mrating_set.all()
+    if ratings:
+        rating_list = []
+        for rating in ratings:
+            rating_list.append(rating.rating)
+        rating_avg = sum(rating_list) / len(rating_list)
+
+    context = {
+        "movie": movie,
+        "people": people,
+        "genres": genres,
+        "ratings": ratings,
+        "rating_avg": rating_avg,
+    }
     return render(
         request,
         "films/movie.html",
-        {"movie": movie, "people": people, "genres": genres},
+        context,
     )
+
+
+@login_required
+def movie_comment_add(request, movie_id, person_id):
+    if request.method == "POST":
+        movie = Movie.objects.get(pk=movie_id)
+        author = User.objects.get(pk=person_id)
+        rating = request.POST["rating"]
+        comment = request.POST["comment"]
+        MRating.objects.create(
+            movie=movie, rating=rating, comment=comment, author=author
+        )
+        return redirect(f"/movie-details/{movie_id}")
 
 
 @login_required

@@ -6,6 +6,7 @@ from films.views import (
     genres,
     index,
     movie,
+    movie_comment_add,
     movie_genre_add,
     movie_genre_remove,
     movie_person_add,
@@ -19,6 +20,11 @@ urlpatterns = [
     path("", index, name="index"),
     path("movies/", movies, name="movies"),
     path("movie-details/<int:movie_id>/", movie, name="movie"),
+    path(
+        "movie-comment-add/<int:movie_id>/<int:person_id>",
+        movie_comment_add,
+        name="movie_comment_add",
+    ),
     path("movie-genre-add/<int:movie_id>", movie_genre_add, name="movie_genre_add"),
     path(
         "movie-genre-remove/<int:movie_id>/<int:genre_id>",
