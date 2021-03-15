@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -14,14 +15,14 @@
     {% for movie in movies %}
       <div class="card m-1" style="width: 80%;">
         <div class="d-flex justify-content-between">
-          <div class="container m-2" style="width: 40%">
-            <h5 class="card-title">{{ movie.title }}</h5>
+          <div class="container m-2" style="width: 70%">
+            <h5 class="card-title">{{ movie.title }} </h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ movie.year }}</h6>
             <p class="card-text">{{ movie.description }}</p>
             <a href="{% url 'movie' movie.id %}"><button type="button" class="btn btn-primary">Szczegóły</button></a>
           </div>
-          <div class="" style="width: 20%">
-            <img class="" src=" " alt="Card image cap" style="">
+          <div class="" style="width: 30%">
+            <img class="" src="/media/{{ movie.cover }}" alt="Card image cap" style="width: 100%; height:100%">
           </div>
         </div>
       </div>
