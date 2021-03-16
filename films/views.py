@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
+from django.views import View
 
 from .models import Genre, Job, Movie, MRating, Person, PersonMovie
 
@@ -9,32 +10,55 @@ def index(request):
     return render(request, "films/index.html")
 
 
-def movies(request):
-    movies = Movie.objects.all().order_by("-year")
-    directors = Person.objects.filter(job=3)
-    screenwriters = Person.objects.filter(job=2)
-    message = None
-    context = {
-        "movies": movies,
-        "directors": directors,
-        "screenwriters": screenwriters,
-        "message": message,
-    }
-    if request.method == "POST":
+class Movies(View):
+    def get(self, request):
+        movies = Movie.objects.all().order_by("-year")
+        directors = Person.objects.filter(job=3)
+        screenwriters = Person.objects.filter(job=2)
+        message = request.GET.get('message', None)
+
+        # below functionality of the search form
+        title = request.GET.get("title")
+        if title:
+            movies = movies.filter(title__icontains=title)
+        first_name = request.GET.get("first_name")
+        if first_name:
+            movies = (
+                movies.filter(director__first_name=first_name)
+                | movies.filter(screenplay__first_name=first_name)
+                | movies.filter(starring__first_name=first_name)
+            ).distinct()
+        last_name = request.GET.get("last_name")
+        if last_name:
+            movies = (
+                movies.filter(director__last_name=last_name)
+                | movies.filter(screenplay__last_name=last_name)
+                | movies.filter(starring__last_name=last_name)
+            ).distinct()
+        year = request.GET.get("year")
+        if year:
+            movies = movies.filter(year=year)
+
+        context = {
+            "movies": movies,
+            "directors": directors,
+            "screenwriters": screenwriters,
+            "message": message,
+        }
+        return render(request, "films/movies.html", context)
+
+    def post(self, request):
         title = request.POST["title"]
         year = request.POST["year"]
-        rating = request.POST["rating"]
         director_id = request.POST["director_id"]
         screenplay_id = request.POST["screenplay_id"]
         new_movie = Movie.objects.create(
             title=title,
             year=year,
-            rating=rating,
             director_id=director_id,
             screenplay_id=screenplay_id,
         )
-        context["message"] = f"Film {title} dodany do bazy"
-    return render(request, "films/movies.html", context)
+        return redirect(f"/movies/?message=Film {title} dodany do bazy")
 
 
 def movie(request, movie_id):

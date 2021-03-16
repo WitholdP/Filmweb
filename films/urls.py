@@ -1,6 +1,7 @@
 from django.urls import path
 
 from films.views import (
+    Movies,
     delete_genre,
     delete_person,
     genres,
@@ -11,14 +12,13 @@ from films.views import (
     movie_genre_remove,
     movie_person_add,
     movie_person_remove,
-    movies,
     person,
     persons,
 )
 
 urlpatterns = [
     path("", index, name="index"),
-    path("movies/", movies, name="movies"),
+    path("movies/", Movies.as_view(), name="movies"),
     path("movie-details/<int:movie_id>/", movie, name="movie"),
     path(
         "movie-comment-add/<int:movie_id>/<int:person_id>",

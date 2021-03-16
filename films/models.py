@@ -37,7 +37,7 @@ class Movie(models.Model):
     year = models.IntegerField()
     genre = models.ManyToManyField(Genre)
     description = models.TextField(null=True)
-    cover = models.FileField(upload_to='covers', null=True)
+    cover = models.FileField(upload_to="covers", null=True)
 
     def __str__(self):
         return self.title
