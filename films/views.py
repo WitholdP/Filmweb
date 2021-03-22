@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, reverse
 from django.views import View
 
-from .forms import GenreForm, MovieForm, PersonForm
+from .forms import GenreForm, MovieForm, PersonForm, SearchForm
 from .models import Genre, Job, Movie, MRating, Person, PersonMovie
 
 
@@ -17,7 +17,7 @@ class Movies(View):
         directors = Person.objects.filter(job=3)
         screenwriters = Person.objects.filter(job=2)
         message = request.GET.get("message", None)
-
+        search_form = SearchForm()
         # below functionality of the search form
         title = request.GET.get("title")
         if title:
@@ -40,13 +40,14 @@ class Movies(View):
         if year:
             movies = movies.filter(year=year)
 
-        form = MovieForm()
+        movie_form = MovieForm()
         context = {
             "movies": movies,
             "directors": directors,
             "screenwriters": screenwriters,
             "message": message,
-            "form": form,
+            "movie_form": movie_form,
+            "search_form": search_form,
         }
         return render(request, "films/movies.html", context)
 

@@ -28,6 +28,21 @@ class MovieForm(ModelForm):
         }
 
 
+class SearchForm(forms.Form):
+    title = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    first_name = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    year = forms.IntegerField(
+        required=False, widget=forms.NumberInput(attrs={"class": "form-control"})
+    )
+
+
 class GenreForm(ModelForm):
     class Meta:
         model = Genre
