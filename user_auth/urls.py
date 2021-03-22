@@ -1,9 +1,8 @@
-import topmic
 from django.urls import path
 
-from user_auth.views import log_in, log_out
+from user_auth.views import LogIn, log_out
 
 urlpatterns = [
-    path("login/", log_in, name="login"),
+    path("login/", LogIn.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
 ]

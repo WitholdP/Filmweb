@@ -1,26 +1,25 @@
-import topmic
 from django.urls import path
 
 from films.views import (
+    Genres,
+    MovieDetails,
     Movies,
+    People,
+    PersonDetails,
     delete_genre,
     delete_person,
-    genres,
     index,
-    movie,
     movie_comment_add,
     movie_genre_add,
     movie_genre_remove,
     movie_person_add,
     movie_person_remove,
-    person,
-    persons,
 )
 
 urlpatterns = [
     path("", index, name="index"),
     path("movies/", Movies.as_view(), name="movies"),
-    path("movie-details/<int:movie_id>/", movie, name="movie"),
+    path("movie-details/<int:movie_id>/", MovieDetails.as_view(), name="movie"),
     path(
         "movie-comment-add/<int:movie_id>/<int:person_id>",
         movie_comment_add,
@@ -38,9 +37,9 @@ urlpatterns = [
         movie_person_remove,
         name="movie_person_remove",
     ),
-    path("persons/", persons, name="persons"),
-    path("person/<int:person_id>/", person, name="person"),
+    path("persons/", People.as_view(), name="persons"),
+    path("person/<int:person_id>/", PersonDetails.as_view(), name="person"),
     path("delete-person/<int:person_id>/", delete_person, name="delete_person"),
-    path("genres/", genres, name="genres"),
+    path("genres/", Genres.as_view(), name="genres"),
     path("delete-genre/<int:genre_id>/", delete_genre, name="delete_genre"),
 ]

@@ -1,7 +1,6 @@
-import topmic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
 from django.views import View
 
 from .forms import GenreForm, MovieForm, PersonForm
@@ -57,33 +56,34 @@ class Movies(View):
         if movie_form.is_valid():
             title = movie_form.cleaned_data["title"]
             new_movie = movie_form.save()
-            return redirect(f"/movies/?message=Film {title} dodany do bazy")
+            return redirect(reverse("movies") + f"?message=Film {title} dodany do bazy")
 
 
-def movie(request, movie_id):
-    movie = Movie.objects.get(pk=movie_id)
-    people = Person.objects.all()
-    genres = Genre.objects.all()
-    rating_avg = 0
-    ratings = movie.mrating_set.all()
-    if ratings:
-        rating_list = []
-        for rating in ratings:
-            rating_list.append(rating.rating)
-        rating_avg = sum(rating_list) / len(rating_list)
+class MovieDetails(View):
+    def get(self, request, movie_id):
+        movie = Movie.objects.get(pk=movie_id)
+        people = Person.objects.all()
+        genres = Genre.objects.all()
+        rating_avg = 0
+        ratings = movie.mrating_set.all()
+        if ratings:
+            rating_list = []
+            for rating in ratings:
+                rating_list.append(rating.rating)
+            rating_avg = sum(rating_list) / len(rating_list)
 
-    context = {
-        "movie": movie,
-        "people": people,
-        "genres": genres,
-        "ratings": ratings,
-        "rating_avg": rating_avg,
-    }
-    return render(
-        request,
-        "films/movie.html",
-        context,
-    )
+        context = {
+            "movie": movie,
+            "people": people,
+            "genres": genres,
+            "ratings": ratings,
+            "rating_avg": rating_avg,
+        }
+        return render(
+            request,
+            "films/movie.html",
+            context,
+        )
 
 
 @login_required
@@ -138,30 +138,36 @@ def movie_genre_remove(request, movie_id, genre_id):
     return redirect(f"/movie-details/{movie_id}")
 
 
-def persons(request):
-    persons = Person.objects.all()
-    form = PersonForm()
-    message = None
-    if request.method == "POST":
+class People(View):
+    def get(self, request):
+        persons = Person.objects.all()
+        form = PersonForm()
+        message = request.GET.get("message", None)
+        return render(
+            request,
+            "films/persons.html",
+            {"persons": persons, "form": form, "message": message},
+        )
+
+    def post(sef, request):
         form = PersonForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
             message = f"Osoba {first_name} {last_name} dodana do bazy"
             form.save()
-
-    return render(
-        request,
-        "films/persons.html",
-        {"persons": persons, "form": form, "message": message},
-    )
+            return redirect(reverse("persons") + f"?message={message}")
 
 
-def person(request, person_id):
-    person = Person.objects.get(pk=person_id)
-    form = PersonForm(instance=person)
-    message = None
-    if request.method == "POST":
+class PersonDetails(View):
+    def get(self, request, person_id):
+        person = Person.objects.get(pk=person_id)
+        form = PersonForm(instance=person)
+        message = request.GET.get("message", None)
+        return render(request, "films/person.html", {"form": form, "message": message})
+
+    def post(self, request, person_id):
+        person = Person.objects.get(pk=person_id)
         form = PersonForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data["first_name"]
@@ -171,46 +177,44 @@ def person(request, person_id):
             person.last_name = last_name
             person.job = job
             person.save()
-            message = f"Osoba zaktualizowana"
-
-    return render(
-        request,
-        "films/person.html",
-        {"form": form, "message": message},
-    )
+            return redirect(
+                reverse("person", args=[person_id]) + "?message=Osoba zaktualizowana"
+            )
 
 
 @login_required
 def delete_person(request, person_id):
     person = Person.objects.get(pk=person_id)
+    message = f"Osoba {person.first_name} {person.last_name} usunięta"
     person.delete()
-    return redirect("/persons/")
+    return redirect(reverse("persons") + f"?message={message}")
 
 
-def genres(request):
-    if request.user.is_authenticated:
-        genres = Genre.objects.all()
-        message = None
-        form = GenreForm()
-        if request.method == "POST":
-            form = GenreForm(request.POST)
-            if form.is_valid():
-                name = form.cleaned_data["name"]
-                new_genres = form.save()
-                message = f"Gatunek {name} dodady do bazy"
-
-        return render(
-            request,
-            "films/genres.html",
-            {"genres": genres, "message": message, "form": form},
-        )
-    else:
+class Genres(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            genres = Genre.objects.all()
+            message = None
+            form = GenreForm()
+            return render(
+                request,
+                "films/genres.html",
+                {"genres": genres, "message": message, "form": form},
+            )
         return redirect("/")
+
+    def post(self, request):
+        form = GenreForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            new_genres = form.save()
+            return redirect(
+                reverse("genres") + f"?message=Gatunek {name} dodady do bazy"
+            )
 
 
 @login_required
 def delete_genre(request, genre_id):
     genre = Genre.objects.get(pk=genre_id)
     genre.delete()
-    message = "dupa"
     return redirect("/genres/")

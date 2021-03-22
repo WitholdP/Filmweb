@@ -1,4 +1,3 @@
-import topmic
 from django.contrib.auth.hashers import check_password
 
 from user_auth.models import User

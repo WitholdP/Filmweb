@@ -1,30 +1,36 @@
-import topmic
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
+from django.views import View
+
+from .forms import UserLoginForm
 
 
-def log_in(request):
-    message = None
-    if request.user.is_authenticated:
-        return redirect("/")
-    else:
-        if request.method == "POST":
-            username = request.POST["username"]
-            password = request.POST["password"]
-            user = authenticate(request, username=username, password=password)
+class LogIn(View):
+    def get(self, request):
+        message = request.GET.get("message", None)
+        form = UserLoginForm()
+        context = {
+            "message": message,
+            "form": form,
+        }
+        if request.user.is_authenticated:
+            return redirect("/")
+        else:
+            return render(request, "user_auth/login.html", context)
+
+    def post(self, request):
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=email, password=password)
             if user:
                 login(request, user)
                 return redirect("/")
             else:
-                message = "Zła nazwa użytkownika lub hasło"
-
-        return render(
-            request,
-            "user_auth/login.html",
-            {
-                "message": message,
-            },
-        )
+                return redirect(
+                    reverse("login") + "?message=Zła nazwa użytkonika lub hasło"
+                )
 
 
 def log_out(request):

@@ -11,12 +11,7 @@
 <div class="container">
   <form class="" action="" method="POST">
     {% csrf_token %}
-    <label for="username" class="form-label">Email lub nazwa użytkownika</label>
-    <input type="text" id="username" name="username" class="form-control" value="">
-
-    <label for="password" class="form-label">Hasło</label>
-    <input type="password" id="password" name="password" class="form-control" value="">
-
+     {{ form.as_p }}
     <br>
     <button type="submit" class="btn btn-success">Log in</button>
   </form>
