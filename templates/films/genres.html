@@ -35,8 +35,7 @@
       <br><br>
       <form class="" action="" method="POST">
         {% csrf_token %}
-        <label for="genre_name" class="form-label">Genre name:</label><br>
-        <input type="text" id="genre_name" name="genre_name" class="form-control" value=""><br>
+        {{ form.as_p }}
         <button type="submit" class="btn btn-primary">ADD GENRE</button>
       </form>
     </div>

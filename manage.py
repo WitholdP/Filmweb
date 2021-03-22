@@ -3,6 +3,8 @@
 import os
 import sys
 
+import topmic
+
 
 def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FilmWeb.settings")

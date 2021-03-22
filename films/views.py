@@ -1,9 +1,10 @@
+import topmic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import MovieForm, PersonForm
+from .forms import GenreForm, MovieForm, PersonForm
 from .models import Genre, Job, Movie, MRating, Person, PersonMovie
 
 
@@ -158,20 +159,24 @@ def persons(request):
 
 def person(request, person_id):
     person = Person.objects.get(pk=person_id)
-    jobs = Job.objects.all()
+    form = PersonForm(instance=person)
     message = None
     if request.method == "POST":
-        person.first_name = request.POST["first_name"]
-        person.last_name = request.POST["last_name"]
-        job = Job.objects.get(pk=request.POST["job_id"])
-        person.job = job
-        person.save()
-        message = f"Osoba zaktualizowana"
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            job = form.cleaned_data["job"]
+            person.first_name = first_name
+            person.last_name = last_name
+            person.job = job
+            person.save()
+            message = f"Osoba zaktualizowana"
 
     return render(
         request,
         "films/person.html",
-        {"person": person, "message": message, "jobs": jobs},
+        {"form": form, "message": message},
     )
 
 
@@ -186,13 +191,18 @@ def genres(request):
     if request.user.is_authenticated:
         genres = Genre.objects.all()
         message = None
+        form = GenreForm()
         if request.method == "POST":
-            genre_name = request.POST["genre_name"]
-            new_genres = Genre.objects.create(name=genre_name)
-            message = f"Gatunek {genre_name} dodady do bazy"
+            form = GenreForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data["name"]
+                new_genres = form.save()
+                message = f"Gatunek {name} dodady do bazy"
 
         return render(
-            request, "films/genres.html", {"genres": genres, "message": message}
+            request,
+            "films/genres.html",
+            {"genres": genres, "message": message, "form": form},
         )
     else:
         return redirect("/")

@@ -1,3 +1,4 @@
+import topmic
 from django.apps import AppConfig
 
 

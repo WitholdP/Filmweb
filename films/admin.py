@@ -1,3 +1,4 @@
+import topmic
 from django.contrib import admin
 
 from .models import Genre, Job, Movie, Person
