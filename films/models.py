@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
 
@@ -15,7 +15,7 @@ class Person(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default=4)
 
     def __str__(self):
-        return self.first_name
+        return self.first_name + " " + self.last_name
 
 
 class Genre(models.Model):
@@ -54,4 +54,4 @@ class MRating(models.Model):
     rating = models.IntegerField()
     comment = models.TextField(null=True)
     posting_date = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -47,27 +47,7 @@
   <div class="container" style="width: 30%">
     <form class="" action="" method="POST">
       {% csrf_token %}
-      <label for="title" class="form-label">Title:</label>
-      <input type="text" id="title" name="title" class="form-control" value="">
-
-      <label for="year" class="form-label">Year:</label>
-      <input type="number" id="year" name="year" class="form-control" value="">
-
-      <label for="director_id" class="form-label">Director:</label>
-      <select class="form-select" aria-label="Default select example" id="director_id" name="director_id">
-        <option selected></option>
-        {% for director in directors %}
-        <option value="{{ director.id }}">{{ director.first_name}} {{ director.last_name }}</option>
-        {% endfor %}
-      </select>
-
-      <label for="screenplay_id" class="form-label">Screenplay:</label>
-      <select class="form-select" aria-label="Default select example" id="screenplay_id" name="screenplay_id">
-        <option selected></option>
-        {% for screenwriter in screenwriters %}
-        <option value="{{ screenwriter.id }}">{{ screenwriter.first_name}} {{ screenwriter.last_name }}</option>
-        {% endfor %}
-      </select>
+        {{ form.as_p }}
       <br>
       <button type="submit" class="btn btn-primary">ADD MOVIE</button>
     </form>

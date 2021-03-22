@@ -28,17 +28,7 @@
   {% if user.is_authenticated %}
   <form class="" action="" method="POST">
     {% csrf_token %}
-    <label for="first_name" class="form-label">First name:</label><br>
-    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ person.first_name }}"><br>
-    <label for="last_name" class="form-label">Last name:</label><br>
-    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ person.last_name }}"><br>
-    <label for="job_id" class="form-label">Job:</label><br>
-    <select class="form-select" aria-label="Default select example" id="job_id" name="job_id">
-      <option selected value="{{ person.job.id }}">{{ person.job.job_name }}</option>
-      {% for job in jobs %}
-      <option value="{{ job.id }}">{{ job.job_name }}</option>
-      {% endfor %}
-    </select>
+      {{ form.as_p }}
     <br>
     <button type="submit" class="btn btn-primary">EDIT</button>
   </form>

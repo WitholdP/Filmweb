@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.views import View
 
+from .forms import MovieForm, PersonForm
 from .models import Genre, Job, Movie, MRating, Person, PersonMovie
 
 
@@ -15,7 +16,7 @@ class Movies(View):
         movies = Movie.objects.all().order_by("-year")
         directors = Person.objects.filter(job=3)
         screenwriters = Person.objects.filter(job=2)
-        message = request.GET.get('message', None)
+        message = request.GET.get("message", None)
 
         # below functionality of the search form
         title = request.GET.get("title")
@@ -39,26 +40,23 @@ class Movies(View):
         if year:
             movies = movies.filter(year=year)
 
+        form = MovieForm()
         context = {
             "movies": movies,
             "directors": directors,
             "screenwriters": screenwriters,
             "message": message,
+            "form": form,
         }
         return render(request, "films/movies.html", context)
 
     def post(self, request):
-        title = request.POST["title"]
-        year = request.POST["year"]
-        director_id = request.POST["director_id"]
-        screenplay_id = request.POST["screenplay_id"]
-        new_movie = Movie.objects.create(
-            title=title,
-            year=year,
-            director_id=director_id,
-            screenplay_id=screenplay_id,
-        )
-        return redirect(f"/movies/?message=Film {title} dodany do bazy")
+        # breakpoint()
+        movie_form = MovieForm(request.POST)
+        if movie_form.is_valid():
+            title = movie_form.cleaned_data["title"]
+            new_movie = movie_form.save()
+            return redirect(f"/movies/?message=Film {title} dodany do bazy")
 
 
 def movie(request, movie_id):
@@ -141,20 +139,20 @@ def movie_genre_remove(request, movie_id, genre_id):
 
 def persons(request):
     persons = Person.objects.all()
-    jobs = Job.objects.all()
+    form = PersonForm()
     message = None
     if request.method == "POST":
-        first_name = request.POST["first_name"]
-        last_name = request.POST["last_name"]
-        job = Job.objects.get(pk=request.POST["job_id"])
-        new_person = Person(first_name=first_name, last_name=last_name, job=job)
-        new_person.save()
-        message = f"Osoba {first_name} {last_name} dodana do bazy"
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            message = f"Osoba {first_name} {last_name} dodana do bazy"
+            form.save()
 
     return render(
         request,
         "films/persons.html",
-        {"persons": persons, "jobs": jobs, "message": message},
+        {"persons": persons, "form": form, "message": message},
     )
 
 
