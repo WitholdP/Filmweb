@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if message %}
+  <div class="alert alert-danger" role="alert">
+    {{ message }}
+  </div>
+{% endif %}
+
+<div class="container">
+  <form class="" action="" method="POST">
+    {% csrf_token %}
+     {{ form.as_p }}
+    <br>
+    <button type="submit" class="btn btn-success">Log in</button>
+  </form>
+</div>
+
+{% endblock %}

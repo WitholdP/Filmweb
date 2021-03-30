@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if message %}
+  <div class="alert alert-success" role="alert">
+    {{ message }}
+  </div>
+{% endif %}
+
+<h1>List of people</h1>
+<div class="d-flex mt-4">
+  <div class="container mr-3">
+    <table class="table table-primary">
+      <tr>
+        <th>Id</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Zawód</th>
+        <th></th>
+      </tr>
+      {% for person in persons %}
+      <tr>
+        <td>{{ person.id }}</td>
+        <td>{{ person.first_name }}</td>
+        <td>{{ person.last_name }}</td>
+        <td>{{ person.job.job_name }}</td>
+        <td>
+          <a href="{% url 'person' person.id %}"><button type="button" class="btn btn-primary">Details</button></a>
+          {% if user.is_authenticated %}
+          <a href="{% url 'delete_person' person.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% if user.is_authenticated %}
+  <div class="ml-3">
+    <form class="" action="" method="POST">
+      {% csrf_token %}
+        {{ form.as_p }}
+      <br>
+      <button type="submit" class="btn btn-primary">ADD PERSON</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
